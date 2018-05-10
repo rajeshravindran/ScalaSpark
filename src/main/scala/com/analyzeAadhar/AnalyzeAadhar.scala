@@ -3,6 +3,8 @@
 import org.apache.spark
 import org.apache.spark.sql
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 
 
@@ -90,6 +92,15 @@ object AadharAnalysis{
       """.stripMargin
 
     val maleFemaleDistributionSQL = spark.sql(SQL)
+
+
+    var maleFemaleDistribution = aadharDF.select("REGISTRAR", "ENROLMENT_AGENCY", "STATE", "DISTRICT", "SUB_DISTRICT", "PIN_CODE", "GENDER", "AGE", "AADHAAR_GENERATED", "ENROLMENT_REJECTED", "RESIDENTS_PROVIDING_EMAIL", "RESIDENTS_PROVIDING_MOBILE_NUMBER")
+      .groupBy("DISTRICT")
+      .agg(
+        count( lit(1).alias("OVERALL_COUNT")),
+        sum(when(col("GENDER") === "M", 1).otherwise(0).alias("MALE_COUNT")),
+        sum(when(col("GENDER") === "F", 1).otherwise(0).alias("FEMALE_COUNT"))
+      ).orderBy("DISTRICT")
 
   }
 
