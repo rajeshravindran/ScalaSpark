@@ -45,7 +45,7 @@ object AadharAnalysis{
 
   import spark.implicits._
 
-  val filePath = "/Users/greeshma/Downloads/UIDAI-ENR-DETAIL-20170308.csv"
+  val filePath = "/Users/greeshma/ScalaSpark/data/UIDAI-ENR-DETAIL-20170308.csv"
 
 
   def main(args: Array): Unit ={
@@ -94,8 +94,7 @@ object AadharAnalysis{
     val maleFemaleDistributionSQL = spark.sql(SQL)
 
 
-    var maleFemaleDistribution = aadharDF.select("REGISTRAR", "ENROLMENT_AGENCY", "STATE", "DISTRICT", "SUB_DISTRICT", "PIN_CODE", "GENDER", "AGE", "AADHAAR_GENERATED", "ENROLMENT_REJECTED", "RESIDENTS_PROVIDING_EMAIL", "RESIDENTS_PROVIDING_MOBILE_NUMBER")
-      .groupBy("DISTRICT")
+    var maleFemaleDistribution = aadharDF.select("REGISTRAR", "ENROLMENT_AGENCY", "STATE", "DISTRICT", "SUB_DISTRICT", "PIN_CODE", "GENDER", "AGE", "AADHAAR_GENERATED", "ENROLMENT_REJECTED", "RESIDENTS_PROVIDING_EMAIL", "RESIDENTS_PROVIDING_MOBILE_NUMBER").groupBy("DISTRICT")
       .agg(
         count( lit(1).alias("OVERALL_COUNT")),
         sum(when(col("GENDER") === "M", 1).otherwise(0).alias("MALE_COUNT")),
